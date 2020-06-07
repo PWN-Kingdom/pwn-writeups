@@ -3,8 +3,6 @@
 ##  pwnagotchi
 
 
-> 116
->
 > Have fun with your new pwnagotchi!
 >
 > Connect to view your `\ (•-•) /` at `nc pwn.hsctf.com 5005`
@@ -43,8 +41,9 @@
 ```
 Админ несчастлив. Программа принимаем наш ввод и печатает его. Посмотрим глубже.
 ### Декомпилирование с Ghidra
+![](decompile_main.png)
 
-
+> I get one of these a week (_groan_).  I'm only writing this one up because there's a _gotcha_.
 
 
 
