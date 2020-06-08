@@ -118,4 +118,4 @@
 Не забываем, что у нас little endian, поэтому адрес утечки будет **побайтово в обратном поряде**.
 
 ##  Вторая часть:   Определение версии libc
-Для этого воспользуемся сайтом libc database [example site]:http://example.com
+Для этого воспользуемся сайтом libc database [example.com](http://example.com)
